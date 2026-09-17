@@ -1,4 +1,5 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, abort
+from markupsafe import escape
 
 app = Flask(__name__)
 
@@ -9,13 +10,19 @@ def inicio():
         "mensaje": "¡Bienvenido a la API de nuestra práctica de CI/CD!"
     })
 
-# Un endpoint que luego podremos asegurar en la Parte D
 @app.route('/saludo/<nombre>')
 def saludo(nombre):
+    # 1. Validación de entrada (control de tamaño)
+    if len(nombre) > 20:
+        abort(400, description="El nombre ingresado es demasiado largo.")
+    
+    # 2. Sanitización de datos (evita inyección de scripts HTML/JS)
+    nombre_seguro = escape(nombre)
+    
     return jsonify({
-        "mensaje": f"Hola, {nombre}."
+        "mensaje": f"Hola, {nombre_seguro}."
     })
 
 if __name__ == '__main__':
-    # debug=True ayuda a ver errores mientras desarrollan, pero luego lo quitaremos por seguridad
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Apagamos el modo debug por seguridad en un entorno real
+    app.run(host='0.0.0.0', port=5000, debug=False)
