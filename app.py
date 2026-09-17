@@ -20,7 +20,7 @@ def saludo(nombre):
     nombre_seguro = escape(nombre)
     
     return jsonify({
-        "mensaje": f"Hola, {nombre_seguro}."
+        "mensaje": f"Adios, {nombre_seguro}."
     })
 
 if __name__ == '__main__':
